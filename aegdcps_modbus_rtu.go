@@ -93,41 +93,25 @@ type respStruct struct {
 var respons []respStruct
 
 func main() {
-	serialPort := flag.String("serial", "/dev/ttyRS485-1", "a string")
+	serialPort := flag.String("serial", "/dev/ttyRS485-2", "a string")
 	serialSpeed := flag.Int("speed", 9600, "a int")
 	slaveID := flag.Int("id", 4, "an int")
-	//timeout := flag.Int("t", 3000, "an int")
+	timeout := flag.Int("t", 3000, "an int mSec")
 	flag.Parse()
 
-	//		printResult(resultsErr)
-	resultsErr := readModbus(*serialPort, byte(*slaveID),2, *serialSpeed,30)
-//	resultsErr := []byte{0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
-	//fmt.Println(len(resultsErr))
-//	fmt.Println(resultsErr)
+	resultsErr := readModbus(*serialPort, byte(*slaveID), 2, *serialSpeed, 30, int16(*timeout))
 	printErrResult(resultsErr)
-
-		resultsMes := readModbus(*serialPort, byte(*slaveID),100, *serialSpeed,13)
-//	resultsMes := []byte{9, 70, 8, 224, 0, 0, 0, 0, 0, 25, 3, 231, 0, 1, 0, 0, 176, 3, 0, 0, 0, 0, 0, 100, 0, 0}
-	//		printResult(resultsMes)
-	//fmt.Println(len(resultsMes))
-//	fmt.Println(resultsMes)
+	time.Sleep(500 * time.Millisecond)
+	resultsMes := readModbus(*serialPort, byte(*slaveID), 100, *serialSpeed, 13, int16(*timeout))
 	printMesResult(resultsMes)
-	//		os.Exit(0)
 	printJson(respons)
-	/*	60
-		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-		26
-		[9 70 8 224 0 0 0 0 0 25 3 231 0 1 0 0 176 3 0 0 0 0 0 100 0 0]
-	*/
-	/*var ttt = []byte{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 244, 0, 226, 0, 225, 0, 225, 1, 244, 0, 230, 0, 229, 0, 229, 0, 243, 0, 0, 5, 220, 0, 100, 4, 86, 1, 244, 0, 219, 0, 6, 0, 1, 0, 1, 0, 219, 0, 19, 0, 2, 0, 1, 0, 219, 0, 43, 0, 4, 0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	var ttt = []byte{}
-	printResult(ttt)*/
+
 }
-func readModbus(serialPort string, slaveID byte, startReg uint16, serialSpeed int, regQuan uint16) []byte {
+func readModbus(serialPort string, slaveID byte, startReg uint16, serialSpeed int, regQuan uint16, timeout int16) []byte {
 	handler := modbus.NewRTUClientHandler(fmt.Sprint(serialPort))
 	handler.BaudRate = serialSpeed
 	handler.SlaveId = slaveID
-	handler.Timeout = time.Duration(3000) * time.Millisecond
+	handler.Timeout = time.Duration(timeout) * time.Millisecond
 
 	defer handler.Close()
 	client := modbus.NewClient(handler)
@@ -136,6 +120,7 @@ func readModbus(serialPort string, slaveID byte, startReg uint16, serialSpeed in
 	if err != nil {
 		printError(err)
 	}
+	handler.Close()
 	return res
 }
 func printError(err error) {

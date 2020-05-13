@@ -14,7 +14,7 @@ import (
 !!!!!!!!!!!! VERSION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 */
-const version = "0.0.1b"
+const version = "0.0.1"
 
 /*
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -36,53 +36,54 @@ type param1 []par1
 type param2 []par2
 
 var errPar = param1{
-	{2, "2_HiMaiVol"},
-	{3, "3_LoMaiVol"},
-	{4, "4_CharFail"},
-	{5, "5_HiBatVol"},
-	{6, "6_LoBatVol"},
-	{7, "7_HiDCVolt"},
-	{8, "8_LoDCVolt"},
-	{9, "9_GrFault+"},
-	{10, "10_GrFault-"},
-	{11, "11_Spa1"},
-	{12, "12_Spa2"},
-	{13, "13_Spa3"},
-	{14, "14_Spa4"},
-	{15, "15_Spa5"},
-	{16, "16_Spa6"},
-	{17, "17_Spa7"},
-	{18, "18_Spa8"},
-	{19, "19_ChaCurLimInd"},
-	{20, "20_BatCurLimInd"},
-	{21, "21_HiCharCur"},
-	{22, "22_HiBattCur"},
-	{23, "23_HiTemp"},
-	{24, "24_TempSensErr"},
-	{25, "25_IntCommErr"},
-	{26, "26_BatTestFail"},
-	{27, "27_BatTestAbor"},
-	{28, "28_HiBatTemp"},
-	{29, "29_HiFloCur"},
-	{30, "30_LonCharTime"},
-	{31, "31_NoPowSupVol"},
-	{32, "32_BatInOper"},
+	{1, "1_HiMaiVol"},
+	{2, "2_LoMaiVol"},
+	{3, "3_CharFail"},
+	{4, "4_HiBatVol"},
+	{5, "5_LoBatVol"},
+	{6, "6_HiDCVolt"},
+	{7, "7_LoDCVolt"},
+	{8, "8_GrFault+"},
+	{9, "9_GrFault-"},
+	{10, "10_Spa1"},
+	{11, "11_Spa2"},
+	{12, "12_Spa3"},
+	{13, "13_Spa4"},
+	{14, "14_Spa5"},
+	{15, "15_Spa6"},
+	{16, "16_Spa7"},
+	{17, "17_Spa8"},
+	{18, "18_ChaCurLimInd"},
+	{19, "19_BatCurLimInd"},
+	{20, "20_HiCharCur"},
+	{21, "21_HiBattCur"},
+	{22, "22_HiTemp"},
+	{23, "23_TempSensErr"},
+	{24, "24_IntCommErr"},
+	{25, "25_BatTestFail"},
+	{26, "26_BatTestAbor"},
+	{27, "27_HiBatTemp"},
+	{28, "28_HiFloCur"},
+	{29, "29_LonCharTime"},
+	{30, "30_NoPowSupVol"},
+	{31, "31_BatInOper"},
+	{32, "32_BatSymFault"},
 }
 
 var mesPar = param2{
-	{100, 1, "100_MainsVol"},
-	{101, 1, "101_BatVol"},
-	{102, 1, "102_LoadVol"},
-	{103, 1, "103_CharCur"},
-	{104, 2, "104_BatCur"},
-	{105, 3, "105_AmbTemp"},
-	{106, 3, "106_BatTemp"},
-	{107, 1, "107_AnalSpa"},
-	{108, 1, "108_Freq"},
-	{109, 2, "109_EarFauImp"},
-	{110, 4, "110_CharStat"},
-	{111, 5, "111_RemCharTime"},
-	{112, 5, "112_AhMeter"},
+	{99, 1, "99_MainsVol"},
+	{100, 1, "100_BatVol"},
+	{101, 1, "101_LoadVol"},
+	{102, 1, "102_CharCur"},
+	{103, 2, "103_BatCur"},
+	{104, 3, "104_AmbTemp"},
+	{105, 3, "105_BatTemp"},
+	{106, 1, "106_BatSymVol"},
+	{107, 1, "107_ComAlmRel"},
+	{108, 2, "108_EarFauImp"},
+	{109, 4, "109_CharStat"},
+	{110, 5, "110_RemCharTime"},
+	{111, 5, "111_AhMeter"},
 }
 
 type respStruct struct {
@@ -93,16 +94,16 @@ type respStruct struct {
 var respons []respStruct
 
 func main() {
-	serialPort := flag.String("serial", "/dev/ttyRS485-2", "a string")
+	serialPort := flag.String("serial", "/dev/ttyRS485-1", "a string")
 	serialSpeed := flag.Int("speed", 9600, "a int")
-	slaveID := flag.Int("id", 4, "an int")
+	slaveID := flag.Int("id", 1, "an int")
 	timeout := flag.Int("t", 3000, "an int mSec")
 	flag.Parse()
 
-	resultsErr := readModbus(*serialPort, byte(*slaveID), 2, *serialSpeed, 30, int16(*timeout))
+	resultsErr := readModbus(*serialPort, byte(*slaveID), 1, *serialSpeed, 32, int16(*timeout))
 	printErrResult(resultsErr)
 	time.Sleep(500 * time.Millisecond)
-	resultsMes := readModbus(*serialPort, byte(*slaveID), 100, *serialSpeed, 13, int16(*timeout))
+	resultsMes := readModbus(*serialPort, byte(*slaveID), 99, *serialSpeed, 13, int16(*timeout))
 	printMesResult(resultsMes)
 	printJson(respons)
 

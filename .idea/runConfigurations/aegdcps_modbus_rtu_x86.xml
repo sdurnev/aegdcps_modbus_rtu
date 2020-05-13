@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="aegdcps_modbus_rtu_x86" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false">
+    <module name="aegdcps_modbus_rtu" />
+    <working_directory value="$PROJECT_DIR$/" />
+    <envs>
+      <env name="GOOS" value="linux" />
+      <env name="GOARCH" value="amd64" />
+    </envs>
+    <kind value="FILE" />
+    <filePath value="$PROJECT_DIR$/aegdcps_modbus_rtu.go" />
+    <directory value="$PROJECT_DIR$/" />
+    <output_directory value="$PROJECT_DIR$/bin/0.0.1/linux" />
+    <option name="run" value="false" />
+    <method v="2" />
+  </configuration>
+</component>

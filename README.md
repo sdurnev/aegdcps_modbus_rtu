@@ -22,3 +22,4 @@ Example:
 `aegdcps_modbus_rtu -serial=/dev/ttyRS485-1 -speed0=19200 -id=1 `
 
 
+![](https://github.com/sdurnev/aegdcps_modbus_rtu/blob/master/add/A72.jpeg)

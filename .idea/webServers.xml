@@ -16,6 +16,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="563e51cf-2a59-4475-b503-73db70923f9f" name="wirenboard-AEBZUO3E">
+        <fileTransfer accessType="SFTP" host="10.0.0.20" port="22" sshConfigId="22a317de-c3cb-40af-a9a7-541b18d5369b" sshConfig="root@10.0.0.20:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

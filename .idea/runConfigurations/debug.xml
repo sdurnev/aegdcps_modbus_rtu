@@ -2,7 +2,7 @@
   <configuration default="false" name="debug" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false">
     <module name="aegdcps_modbus_rtu" />
     <working_directory value="$PROJECT_DIR$/" />
-    <parameters value="-port=504 -id=4 -ip=10.0.0.28" />
+    <parameters value="-port=504 -id=4 -ip=10.0.0.20" />
     <kind value="FILE" />
     <filePath value="$PROJECT_DIR$/aegdcps_modbus_rtu.go" />
     <directory value="$PROJECT_DIR$/" />

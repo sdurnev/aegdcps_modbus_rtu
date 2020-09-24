@@ -14,7 +14,7 @@ import (
 !!!!!!!!!!!! VERSION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 */
-const version = "0.0.1"
+const version = "0.0.2n"
 
 /*
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -98,17 +98,31 @@ func main() {
 	serialSpeed := flag.Int("speed", 9600, "a int")
 	slaveID := flag.Int("id", 1, "an int")
 	timeout := flag.Int("t", 3000, "an int mSec")
+	requestType := flag.Bool("rtype", true, "a bool")
+	addressIP := flag.String("ip", "localhost", "a string")
+	tcpPort := flag.String("port", "502", "a string")
 	flag.Parse()
 
-	resultsErr := readModbus(*serialPort, byte(*slaveID), 1, *serialSpeed, 32, int16(*timeout))
-	printErrResult(resultsErr)
-	time.Sleep(500 * time.Millisecond)
-	resultsMes := readModbus(*serialPort, byte(*slaveID), 99, *serialSpeed, 13, int16(*timeout))
-	printMesResult(resultsMes)
-	printJson(respons)
+	tcpServerParam := fmt.Sprint(*addressIP, ":", *tcpPort)
 
+	if *requestType == true {
+		resultsErr := readModbusTcp(tcpServerParam, byte(*slaveID), 1, 32, int16(*timeout))
+		printErrResult(resultsErr)
+		time.Sleep(500 * time.Millisecond)
+		resultsMes := readModbusTcp(tcpServerParam, byte(*slaveID), 99, 13, int16(*timeout))
+		printMesResult(resultsMes)
+		printJson(respons)
+	} else {
+		resultsErr := readModbusSerial(*serialPort, byte(*slaveID), 1, *serialSpeed, 32, int16(*timeout))
+		printErrResult(resultsErr)
+		time.Sleep(500 * time.Millisecond)
+		resultsMes := readModbusSerial(*serialPort, byte(*slaveID), 99, *serialSpeed, 13, int16(*timeout))
+		printMesResult(resultsMes)
+		printJson(respons)
+	}
 }
-func readModbus(serialPort string, slaveID byte, startReg uint16, serialSpeed int, regQuan uint16, timeout int16) []byte {
+
+func readModbusSerial(serialPort string, slaveID byte, startReg uint16, serialSpeed int, regQuan uint16, timeout int16) []byte {
 	handler := modbus.NewRTUClientHandler(fmt.Sprint(serialPort))
 	handler.BaudRate = serialSpeed
 	handler.SlaveId = slaveID
@@ -124,6 +138,23 @@ func readModbus(serialPort string, slaveID byte, startReg uint16, serialSpeed in
 	handler.Close()
 	return res
 }
+
+func readModbusTcp(tcpServerParam string, slaveID byte, startReg uint16, regQuan uint16, timeout int16) []byte {
+	handler := modbus.NewTCPClientHandler(tcpServerParam)
+	handler.SlaveId = slaveID
+	handler.Timeout = time.Duration(timeout) * time.Millisecond
+
+	defer handler.Close()
+	client := modbus.NewClient(handler)
+
+	res, err := client.ReadHoldingRegisters(startReg, regQuan)
+	if err != nil {
+		printError(err)
+	}
+	handler.Close()
+	return res
+}
+
 func printError(err error) {
 	fmt.Printf("{\"status\":\"error\", \"error\":\"%s\", \"version\":\"%s\"} \n", err, version)
 	os.Exit(1)

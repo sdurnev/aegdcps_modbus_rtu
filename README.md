@@ -2,7 +2,7 @@
 
 #### aegdcps_modbus_rtu
 
-Read modbus regestry from 1 to 32, and 99 to 111 address, and returns a json object.
+Read modbus tcp/rtu regestry from 1 to 32, and 99 to 111 address, and returns a json object.
 
 Programm flags:
 
@@ -12,14 +12,28 @@ Programm flags:
 
 -id - modbus slave ID (defaut value 1)
 
+-t - timeout milisec (defaut value 3000)
+
+-rtype - request type tcp/rtu - true/false (default value true)
+
+-ip - modbus slave ip adress (defaut value localhost)
+
+-port - modbus tcp port (defaut value 502)
+
+
+
+
 **Note:** serial port static config "8E1" 
-
-
 
 
 Example:
 
-`aegdcps_modbus_rtu -serial=/dev/ttyRS485-1 -speed0=19200 -id=1 `
+For modbus-rtu: 
+
+`aegdcps_modbus_rtu -serial=/dev/ttyRS485-1 -rtype=false -speed0=19200 -id=1 `
+
+`aegdcps_modbus_rtu -ip=192.168.10.10 -rtype=true -port=503 -id=1 `
+
 
 #### A71 board jampers
 
